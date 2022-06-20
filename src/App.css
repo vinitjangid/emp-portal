@@ -24,6 +24,12 @@
   color: white;
 }
 
+.basic {
+  background-color: #676568;
+  border-radius: 8px;
+}
+
+
 .App-link {
   color: #61dafb;
 }

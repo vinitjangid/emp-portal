@@ -1,4 +1,5 @@
-import React ,{ useState }  from "react";
+import React, { useState } from "react";
+import './App.css';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -16,90 +17,97 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 import DeleteIcon from '@mui/icons-material/Delete';
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import { Box } from "@mui/material";
 import uuid from "react-uuid";
 
-
 function Home() {
-
   const [open, setOpen] = useState(false);
+  const [openBar, setOpenBar] = useState(false);
   const [name ,setName] = useState("");
   const [email,setEmail] = useState("");
-  const [age,setAge] = useState();
+  const [age,setAge] = useState("");
   const [mobile, setMobile] = useState("");
-  //const [array, setArray] = useState([]);
   const [array, setArray] = useState([]);
   const [originalArray, setOriginalArray] = useState([]);
-
-  const [render, setRender] = useState(1);
+  const [render, setRender] = useState();
   
-  const handleClickOpen = () => {
+  const HandleClickOpen = () => {
     setOpen(true);
+    HandleSnackBar();
   };
   
-  const handleClose = () => {
+  const HandleClose = () => {
     setOpen(false);
+    HandleSnackBar();
+  };
+
+  const HandleSnackBar = () => {
+    setOpenBar(false);
   };
 
   const HandleSearch = (e) => {
-    debugger
-    const input = e.target.value;
-    const fixarray = originalArray
-    console.log(fixarray)
-    const filteredArray = fixarray.filter((item) => {
+    const input = e.target.value.toLowerCase();
+    const filteredArray = originalArray.filter((item) => {
       return (
-        item.name.includes(input)
+        item.name.includes(input).toLowerCase()
       )
     });
     setArray(filteredArray)
-
-  }
+    HandleSnackBar();
+  };
   
-  const handleSubmit = () => {
+  const HandleSubmit = () => {
     const person = {
-      id: originalArray.length,
       name: name,
       email: email,
       age: age,
       mobile : mobile
     }
 
-
     if (originalArray.length === 0 ) {
       setOriginalArray([person])
       setArray([person])
-      console.log(array)
     } else {
       setOriginalArray([...originalArray, person])
       setArray([...array, person])
-      console.log(array)
     }
     setOpen(false);
+    setOpenBar(true);
   };
 
   const HandleDelete = (row) => {
-    console.log(row, 'row')
-    var myIndex = originalArray.indexOf(row);
-    originalArray.splice(myIndex, 1);
-    setArray(originalArray)
-    console.log(originalArray)
+    if (array.length === 1 ) {
+      setArray([]);
+      setOriginalArray([]);
+    } else {
+      const myIndex = originalArray.indexOf(row);
+      originalArray.splice(myIndex, 1);
+      array.splice(myIndex, 1);
+    }
+    HandleSnackBar();
+    setRender(uuid);
   };
     
   return (
     <div className="Home">
-          <div>
-      <Button variant="outlined" onClick={handleClickOpen}>
+      <div>
+        <Box mb={ 4}>
+      <Button variant="outlined" onClick={HandleClickOpen}>
         Add new employee
-        </Button>
-        <div className='container' >
+          </Button>
+          </Box>
+          <Box className="box" mt={4}>
       <TextField
-          id="outlined-basic"
+            id="outlined-basic"
+            className="basic"
           variant="filled"
-          fullWidth
-            label="Search"
+          width='40px'
+          label="Search"
             onChange={(event) => HandleSearch(event)}
-          />
-          </div>
-      <Dialog open={open} onClose={handleClose}>
+          /></Box>
+      <Dialog open={open} onClose={HandleClose}>
         <DialogTitle>Enter employee information</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -110,6 +118,7 @@ function Home() {
               margin="dense"
               id="name"
               label="Name"
+              required
               type="text"
               fullWidth
               variant="standard"
@@ -122,7 +131,8 @@ function Home() {
             id="email"
             label="Email Address"
             type="email"
-            fullWidth
+              fullWidth
+              required
               variant="standard"
               value={email}
               onChange={({ target }) => setEmail(target.value)}
@@ -132,8 +142,8 @@ function Home() {
             margin="dense"
             id="age"
               label="Age"
-              
-            type="number"
+              required
+            type="text"
             fullWidth
               variant="standard"
               value={age}
@@ -145,20 +155,21 @@ function Home() {
             id="mobile"
             label="Contact Number"
             type="number"
-            fullWidth
+              fullWidth
+              required
               variant="standard"
               value={mobile}
               onChange={({ target }) => setMobile(target.value)}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit}>Add</Button>
+          <Button onClick={HandleClose}>Cancel</Button>
+          <Button onClick={HandleSubmit}>Add</Button>
         </DialogActions>
       </Dialog>
     </div>
           
-      
+      <Box sx={{ m: 2 }}></Box>
     <div className='container' >
       {array.length > 0 ? 
               <TableContainer component={Paper}>
@@ -174,35 +185,26 @@ function Home() {
                     </TableHead>
                     <TableBody>
                 {array.map((row, id ) => (
-                        <TableRow key={id}
-                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      > 
-                        {row !== '' ? <TableCell component="th" scope="row">
-                            {row.name}
-                    </TableCell> : null}
-                    {row !== '' ? <TableCell component="th" scope="row">
-                            {row.email}
-                    </TableCell> : null}
-                    {row !== '' ? <TableCell component="th" scope="row">
-                            {row.age}
-                    </TableCell> : null}
-                    {row !== '' ? <TableCell component="th" scope="row">
-                            {row.mobile}
-                    </TableCell> : null}
+                        <TableRow key={id}>
+                    <TableCell component="th" scope="row">{row.name}</TableCell>
+                    <TableCell component="th" scope="row">{row.email}</TableCell>
+                    <TableCell component="th" scope="row">{row.age}</TableCell> 
+                    <TableCell component="th" scope="row">{row.mobile} </TableCell>
                     <TableCell>
-                      <Button onClick={(e) => HandleDelete(row)}>
-                        <DeleteIcon />
-                      </Button>
-                </TableCell> 
+                      <Button onClick={(e) => HandleDelete(row)}><DeleteIcon /></Button>
+                    </TableCell> 
                     </TableRow>
-                      
                     ))}
                     </TableBody>
                 </Table>
                 </TableContainer>
-                : <h3> No data found</h3> }
-                </div>
-        
+                : <h5> No data found</h5> }
+      </div>
+      {openBar ?
+        <Box mt={4}>
+        <Stack sx={{ width: '100%' }} spacing={8}>
+          <Alert onClose={HandleSnackBar}>Employee added successfully</Alert>
+        </Stack></Box> : null}
     </div>
   );
 }
