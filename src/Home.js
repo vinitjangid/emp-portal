@@ -16,6 +16,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
 import DeleteIcon from '@mui/icons-material/Delete';
+import uuid from "react-uuid";
 
 
 function Home() {
@@ -23,10 +24,13 @@ function Home() {
   const [open, setOpen] = useState(false);
   const [name ,setName] = useState("");
   const [email,setEmail] = useState("");
-  const [age,setAge] = useState("");
+  const [age,setAge] = useState();
   const [mobile, setMobile] = useState("");
   //const [array, setArray] = useState([]);
-  var array = [];
+  const [array, setArray] = useState([]);
+  const [originalArray, setOriginalArray] = useState([]);
+
+  const [render, setRender] = useState(1);
   
   const handleClickOpen = () => {
     setOpen(true);
@@ -35,11 +39,24 @@ function Home() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const HandleSearch = (e) => {
+    debugger
+    const input = e.target.value;
+    const fixarray = originalArray
+    console.log(fixarray)
+    const filteredArray = fixarray.filter((item) => {
+      return (
+        item.name.includes(input)
+      )
+    });
+    setArray(filteredArray)
+
+  }
   
   const handleSubmit = () => {
-    console.log(array)
     const person = {
-      key: array.length,
+      id: originalArray.length,
       name: name,
       email: email,
       age: age,
@@ -47,39 +64,41 @@ function Home() {
     }
 
 
-    if (array.length = 0 ) {
-      array = [person]
+    if (originalArray.length === 0 ) {
+      setOriginalArray([person])
+      setArray([person])
+      console.log(array)
     } else {
-      array.push(person)
+      setOriginalArray([...originalArray, person])
+      setArray([...array, person])
+      console.log(array)
     }
-    console.log(array)
-
-
-
-    //setArray([prevArray, person])
     setOpen(false);
   };
 
-  // const HandleDelete = () => {
-  //   //console.log(e)
-  //   //array.splice(e);
-  // };
+  const HandleDelete = (row) => {
+    console.log(row, 'row')
+    var myIndex = originalArray.indexOf(row);
+    originalArray.splice(myIndex, 1);
+    setArray(originalArray)
+    console.log(originalArray)
+  };
     
-
-
   return (
     <div className="Home">
           <div>
       <Button variant="outlined" onClick={handleClickOpen}>
         Add new employee
-      </Button>
-      {array.length > 0 ? 
+        </Button>
+        <div className='container' >
       <TextField
           id="outlined-basic"
           variant="filled"
           fullWidth
-          label="Search"
-        /> : null }
+            label="Search"
+            onChange={(event) => HandleSearch(event)}
+          />
+          </div>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Enter employee information</DialogTitle>
         <DialogContent>
@@ -112,7 +131,8 @@ function Home() {
             autoFocus
             margin="dense"
             id="age"
-            label="Age"
+              label="Age"
+              
             type="number"
             fullWidth
               variant="standard"
@@ -145,44 +165,42 @@ function Home() {
                       <Table sx={{ minWidth: 650 }} aria-label="simple table" mt={4 }>
                     <TableHead>
                     <TableRow>
-                        <TableCell >S.no</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell >Email</TableCell>
                         <TableCell>Age</TableCell>
-                        <TableCell>Mobile</TableCell>
+                  <TableCell>Mobile</TableCell>
+                  <TableCell>Delete</TableCell>
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                {array.map((row , key) => (
-                        <TableRow key={key}
+                {array.map((row, id ) => (
+                        <TableRow key={id}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                       > 
-                      <TableCell>{key + 1}</TableCell>
-                        
                         {row !== '' ? <TableCell component="th" scope="row">
-                            {name}
+                            {row.name}
                     </TableCell> : null}
                     {row !== '' ? <TableCell component="th" scope="row">
-                            {email}
+                            {row.email}
                     </TableCell> : null}
                     {row !== '' ? <TableCell component="th" scope="row">
-                            {age}
+                            {row.age}
                     </TableCell> : null}
                     {row !== '' ? <TableCell component="th" scope="row">
-                            {mobile}
+                            {row.mobile}
                     </TableCell> : null}
-                    {/*<TableCell>
-                      <Button onClick={HandleDelete}>
-                      <DeleteIcon />
+                    <TableCell>
+                      <Button onClick={(e) => HandleDelete(row)}>
+                        <DeleteIcon />
                       </Button>
-                </TableCell> */}
+                </TableCell> 
                     </TableRow>
                       
                     ))}
                     </TableBody>
                 </Table>
                 </TableContainer>
-                : null }
+                : <h3> No data found</h3> }
                 </div>
         
     </div>
