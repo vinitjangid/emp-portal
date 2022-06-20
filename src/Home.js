@@ -15,6 +15,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
 function Home() {
 
   const [open, setOpen] = useState(false);
@@ -22,40 +25,45 @@ function Home() {
   const [email,setEmail] = useState("");
   const [age,setAge] = useState("");
   const [mobile, setMobile] = useState("");
+  //const [array, setArray] = useState([]);
+  var array = [];
   
-  const [array, setArray] = useState([]);
-  var car = [];
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
   
-
-  
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-  
-    const handleClose = () => {
-      setOpen(false);
-    };
+  const handleClose = () => {
+    setOpen(false);
+  };
   
   const handleSubmit = () => {
-    
-  //   setArray((prevState) => {
-  //     return {
-  //       ...prevState,
-  //       {name: name, age:  age, mobile, email
-  //     }
-  //   })
-    
-    
-    //setArray(...array, [name: name, age: age])
+    console.log(array)
     const person = {
+      key: array.length,
       name: name,
       email: email,
       age: age,
       mobile : mobile
     }
-    car.push(person);
-    console.log(car)
+
+
+    if (array.length = 0 ) {
+      array = [person]
+    } else {
+      array.push(person)
+    }
+    console.log(array)
+
+
+
+    //setArray([prevArray, person])
+    setOpen(false);
   };
+
+  // const HandleDelete = () => {
+  //   //console.log(e)
+  //   //array.splice(e);
+  // };
     
 
 
@@ -65,6 +73,13 @@ function Home() {
       <Button variant="outlined" onClick={handleClickOpen}>
         Add new employee
       </Button>
+      {array.length > 0 ? 
+      <TextField
+          id="outlined-basic"
+          variant="filled"
+          fullWidth
+          label="Search"
+        /> : null }
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Enter employee information</DialogTitle>
         <DialogContent>
@@ -125,10 +140,12 @@ function Home() {
           
       
     <div className='container' >
+      {array.length > 0 ? 
               <TableContainer component={Paper}>
                       <Table sx={{ minWidth: 650 }} aria-label="simple table" mt={4 }>
                     <TableHead>
                     <TableRow>
+                        <TableCell >S.no</TableCell>
                         <TableCell>Name</TableCell>
                         <TableCell >Email</TableCell>
                         <TableCell>Age</TableCell>
@@ -136,22 +153,36 @@ function Home() {
                     </TableRow>
                     </TableHead>
                     <TableBody>
-                {car.map((row) => (
-                        <TableRow
+                {array.map((row , key) => (
+                        <TableRow key={key}
                         sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      >
+                      > 
+                      <TableCell>{key + 1}</TableCell>
                         
                         {row !== '' ? <TableCell component="th" scope="row">
                             {name}
                     </TableCell> : null}
-                    <TableCell>{age}</TableCell>
-                        {/* row !== '' ?  <TableCell align="right"> $ {row}</TableCell> : null */}
+                    {row !== '' ? <TableCell component="th" scope="row">
+                            {email}
+                    </TableCell> : null}
+                    {row !== '' ? <TableCell component="th" scope="row">
+                            {age}
+                    </TableCell> : null}
+                    {row !== '' ? <TableCell component="th" scope="row">
+                            {mobile}
+                    </TableCell> : null}
+                    {/*<TableCell>
+                      <Button onClick={HandleDelete}>
+                      <DeleteIcon />
+                      </Button>
+                </TableCell> */}
                     </TableRow>
                       
                     ))}
                     </TableBody>
                 </Table>
                 </TableContainer>
+                : null }
                 </div>
         
     </div>
