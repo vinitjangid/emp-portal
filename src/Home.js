@@ -20,7 +20,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import { Box } from "@mui/material";
-import uuid from "react-uuid";
 
 function Home() {
   const [open, setOpen] = useState(false);
@@ -31,7 +30,7 @@ function Home() {
   const [mobile, setMobile] = useState("");
   const [array, setArray] = useState([]);
   const [originalArray, setOriginalArray] = useState([]);
-  const [render, setRender] = useState();
+  const [text, setText] = useState("Employee Added Succesfully");
   
   const HandleClickOpen = () => {
     setOpen(true);
@@ -51,7 +50,7 @@ function Home() {
     const input = e.target.value.toLowerCase();
     const filteredArray = originalArray.filter((item) => {
       return (
-        item.name.includes(input).toLowerCase()
+        item.name.toLowerCase().includes(input)
       )
     });
     setArray(filteredArray)
@@ -75,6 +74,7 @@ function Home() {
     }
     setOpen(false);
     setOpenBar(true);
+    setTimeout(HandleSnackBar, 1000);
   };
 
   const HandleDelete = (row) => {
@@ -86,8 +86,9 @@ function Home() {
       originalArray.splice(myIndex, 1);
       array.splice(myIndex, 1);
     }
-    HandleSnackBar();
-    setRender(uuid);
+    setText("Employee Deleted Successfully")
+    setOpenBar(true);
+    setTimeout(HandleSnackBar, 1000);
   };
     
   return (
@@ -104,7 +105,7 @@ function Home() {
             className="basic"
           variant="filled"
           width='40px'
-          label="Search"
+            label="Search"
             onChange={(event) => HandleSearch(event)}
           /></Box>
       <Dialog open={open} onClose={HandleClose}>
@@ -169,7 +170,7 @@ function Home() {
       </Dialog>
     </div>
           
-      <Box sx={{ m: 2 }}></Box>
+      <Box mt={2}></Box>
     <div className='container' >
       {array.length > 0 ? 
               <TableContainer component={Paper}>
@@ -203,7 +204,7 @@ function Home() {
       {openBar ?
         <Box mt={4}>
         <Stack sx={{ width: '100%' }} spacing={8}>
-          <Alert onClose={HandleSnackBar}>Employee added successfully</Alert>
+            <Alert onClose={HandleSnackBar}>{text}</Alert>
         </Stack></Box> : null}
     </div>
   );
