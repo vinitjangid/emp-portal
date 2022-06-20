@@ -58,23 +58,24 @@ function Home() {
   };
   
   const HandleSubmit = () => {
-    const person = {
-      name: name,
-      email: email,
-      age: age,
-      mobile : mobile
-    }
-
-    if (originalArray.length === 0 ) {
-      setOriginalArray([person])
-      setArray([person])
-    } else {
-      setOriginalArray([...originalArray, person])
-      setArray([...array, person])
-    }
-    setOpen(false);
-    setOpenBar(true);
-    setTimeout(HandleSnackBar, 1000);
+    if (name !== "" && age !== "" && mobile !== "" && email !== "" ) {
+      const person = {
+        name: name,
+        email: email,
+        age: age,
+        mobile : mobile
+      }
+      if (originalArray.length === 0 ) {
+        setOriginalArray([person])
+        setArray([person])
+      } else {
+        setOriginalArray([...originalArray, person])
+        setArray([...array, person])
+      }
+      setOpen(false);
+      setOpenBar(true);
+      setTimeout(HandleSnackBar, 1000);
+    } 
   };
 
   const HandleDelete = (row) => {
