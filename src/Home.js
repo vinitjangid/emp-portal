@@ -20,6 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Alert from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
 import { Box } from "@mui/material";
+import axios from "axios";
 
 function Home() {
   const [open, setOpen] = useState(false);
@@ -31,6 +32,15 @@ function Home() {
   const [array, setArray] = useState([]);
   const [originalArray, setOriginalArray] = useState([]);
   const [text, setText] = useState("Employee Added Succesfully");
+  const [ip, setIP] = useState("");
+
+
+  const findYourIP = () => {
+    axios.get('https://api.ipify.org?format=json').then(res => {
+      setIP(res.data.ip)
+      console.log(res.data.ip)
+    }) 
+  }
   
   const HandleClickOpen = () => {
     setOpen(true);
@@ -202,6 +212,13 @@ function Home() {
                 </TableContainer>
                 : <h5> No data found</h5> }
       </div>
+
+      <Button variant="outlined" onClick={findYourIP}>
+        click me
+      </Button>
+      {ip?  <h4>Your IP: {ip}</h4> : null}
+      
+
       {openBar ?
         <Box mt={4}>
         <Stack sx={{ width: '100%' }} spacing={8}>
