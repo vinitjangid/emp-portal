@@ -39,7 +39,24 @@ function Home() {
     axios.get('https://api.ipify.org?format=json').then(res => {
       setIP(res.data.ip)
       console.log(res.data.ip)
+      getApiCall();
     }) 
+  }
+
+  const getApiCall = () => {
+    axios.get('https://reqres.in/api/users?page=2').then(res => {
+      console.log(res.data)
+    })
+  }
+
+  const postApiCall = () => {
+    const data = {
+      name: name,
+      job: email,
+    }
+    axios.post('https://reqres.in/api/user', data).then(res => {
+      console.log(res)
+    })
   }
   
   const HandleClickOpen = () => {
@@ -85,6 +102,7 @@ function Home() {
       setOpen(false);
       setOpenBar(true);
       setTimeout(HandleSnackBar, 1000);
+      postApiCall();
     } 
   };
 
